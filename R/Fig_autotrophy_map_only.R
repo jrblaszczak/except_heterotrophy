@@ -1,6 +1,6 @@
 # Annual autotrophy in streams
 # May 26, 2022
-# Joanna Blaszczak
+# J. Blaszczak, C. Barbosa, M. Desiervo
 
 ## load more packages
 lapply(c("plyr","dplyr","ggplot2","cowplot",
@@ -9,25 +9,29 @@ lapply(c("plyr","dplyr","ggplot2","cowplot",
          "ggsn","wesanderson"), require, character.only=T)
 
 
-# But file is small enough and has been added to "data_356rivers" folder
-site_info <- read.table("data_356rivers/site_data.tsv",sep = "\t", header=T)
-auto_1$site_name <- auto_1$SiteID
-auto_1 <- merge(auto_1, site_info, by="site_name")
+## Import Data
+NEP_info <- read.csv("")
 
-(fig3 <- ggmap(get_stamenmap(bbox=c(-125, 25, -66, 50), zoom = 5, 
+
+## Generate map of NEP
+ggmap(get_stamenmap(bbox=c(-125, 25, -66, 50), zoom = 5, 
                              maptype='toner'))+
-    geom_point(data = auto_1, aes(x = lon, y = lat, 
-                                  fill=event_dur, size=event_dur),
-               shape=21)+
+    geom_point(data = NEP_info, aes(x = lon, y = lat, 
+                                  fill=NEP, size=NEP), shape=21)+
     theme(legend.position = "right")+
     labs(x="Longitude", y="Latitude")+
-    scale_fill_gradient("Mean Autotrophic Event (days)",
-                        low = "blue", high = "red",
-                        breaks=c(1, 7, 14),
-                        labels=c("1 day", "1 week", "2 weeks"))+
-    scale_size_continuous("Mean Event Duration",
-                          breaks = c(1,7,14),
-                          labels=c("1 day", "1 week", "2 weeks")))
+    scale_fill_gradient("Mean annual NEP (units C)",
+                        low = "blue", high = "red")+
+    scale_size_continuous("Mean annual NEP (units C)")
 
-
+## Generate map of P:R
+ggmap(get_stamenmap(bbox=c(-125, 25, -66, 50), zoom = 5, 
+                    maptype='toner'))+
+  geom_point(data = NEP_info, aes(x = lon, y = lat, 
+                                fill=PtoR, size=PtoR), shape=21)+
+  theme(legend.position = "right")+
+  labs(x="Longitude", y="Latitude")+
+  scale_fill_gradient("P:R",
+                      low = "blue", high = "red")+
+  scale_size_continuous("P:R")
 
